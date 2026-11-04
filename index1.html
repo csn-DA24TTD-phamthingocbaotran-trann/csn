@@ -1,0 +1,1657 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website quản lý học viên - Trung tâm ngoại ngữ</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button {
+            padding: 10px 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.88;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .login-box {
+            width: 360px;
+            max-width: 92%;
+            margin: 90px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px #cbd5e1;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #2563eb;
+        }
+
+        .login-message {
+            color: #dc2626;
+            text-align: center;
+        }
+
+        .container {
+            display: none;
+        }
+
+        header {
+            background: #1e40af;
+            color: white;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h2 {
+            margin: 0 0 8px;
+            color: white;
+        }
+
+        .logout-button {
+            background: #dc2626;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #dbeafe;
+        }
+
+        nav button {
+            background: transparent;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        nav button.active,
+        nav button:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        main {
+            padding: 22px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 7px #e2e8f0;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #1d4ed8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            background: white;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+            box-shadow: 0 2px 7px #e2e8f0;
+        }
+
+        .stat-card p {
+            margin-bottom: 5px;
+            color: #64748b;
+        }
+
+        .stat-card strong {
+            font-size: 28px;
+            color: #1d4ed8;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .secondary {
+            background: #64748b;
+        }
+
+        .success {
+            background: #16a34a;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .search-box {
+            max-width: 450px;
+            margin-bottom: 15px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            text-align: left;
+        }
+
+        th {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table-button {
+            padding: 7px 10px;
+            margin: 2px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+        }
+
+        .status-present {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .status-absent {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px;
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            main {
+                padding: 12px;
+            }
+
+            .form-grid, .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ĐĂNG NHẬP -->
+    <section class="login-box" id="loginBox">
+        <h2>Đăng nhập quản lý</h2>
+        <p style="text-align:center">
+            Trung tâm ngoại ngữ
+        </p>
+
+        <form id="loginForm">
+            <label for="username">Tên đăng nhập</label>
+            <input id="username" type="text"
+                   placeholder="Nhập tên đăng nhập" required>
+
+            <label for="password">Mật khẩu</label>
+            <input id="password" type="password"
+                   placeholder="Nhập mật khẩu" required>
+
+            <button type="submit" style="width:100%;margin-top:12px">
+                Đăng nhập
+            </button>
+
+            <p class="login-message" id="loginMessage"></p>
+        </form>
+
+        <p style="text-align:center;font-size:13px">
+            Tài khoản mẫu: quanly<br>
+            Mật khẩu mẫu: 123456
+        </p>
+    </section>
+
+    <!-- GIAO DIỆN HỆ THỐNG -->
+    <div class="container" id="app">
+
+        <header>
+            <div>
+                <h2>TRUNG TÂM NGOẠI NGỮ</h2>
+                <div>Website quản lý học viên</div>
+            </div>
+
+            <div>
+                <span>Người quản lý</span>
+                <button class="logout-button" onclick="logout()">
+                    Đăng xuất
+                </button>
+            </div>
+        </header>
+
+        <nav id="navigation">
+            <button class="active" data-page="home">Trang chủ</button>
+            <button data-page="students">Học viên</button>
+            <button data-page="courses">Khóa học</button>
+            <button data-page="teachers">Giáo viên</button>
+            <button data-page="classes">Lớp học</button>
+            <button data-page="schedules">Lịch học</button>
+            <button data-page="registrations">Đăng ký khóa học</button>
+            <button data-page="attendance">Điểm danh</button>
+        </nav>
+
+        <main>
+
+            <!-- TRANG CHỦ -->
+            <section class="page active" id="home">
+                <div class="card">
+                    <h2>Trang chủ</h2>
+                    <p>
+                        Chào mừng bạn đến với hệ thống quản lý học viên
+                        tại trung tâm ngoại ngữ.
+                    </p>
+                    <p>
+                        Hệ thống hỗ trợ quản lý thông tin học viên,
+                        khóa học, giáo viên, lớp học và điểm danh.
+                    </p>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <p>Tổng học viên</p>
+                        <strong id="totalStudents">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <p>Tổng khóa học</p>
+                        <strong id="totalCourses">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <p>Tổng giáo viên</p>
+                        <strong id="totalTeachers">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HỌC VIÊN -->
+            <section class="page" id="students">
+                <div class="card">
+                    <h2>Thông tin học viên</h2>
+
+                    <form id="studentForm">
+                        <input type="hidden" id="studentId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="studentName">Họ và tên</label>
+                                <input id="studentName" required
+                                       placeholder="Nhập họ và tên">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentBirth">Ngày sinh</label>
+                                <input id="studentBirth" type="date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentGender">Giới tính</label>
+                                <select id="studentGender" required>
+                                    <option value="">Chọn giới tính</option>
+                                    <option>Nam</option>
+                                    <option>Nữ</option>
+                                    <option>Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentPhone">Số điện thoại</label>
+                                <input id="studentPhone" type="tel" required
+                                       placeholder="Nhập số điện thoại">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentEmail">Email</label>
+                                <input id="studentEmail" type="email"
+                                       placeholder="Nhập email">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentCourse">Khóa học</label>
+                                <select id="studentCourse">
+                                    <option value="">Chưa chọn khóa học</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveStudentButton">
+                                Thêm học viên
+                            </button>
+                            <button type="button" class="secondary"
+                                    onclick="resetStudentForm()">
+                                Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách học viên</h2>
+                    <input class="search-box" id="studentSearch"
+                           placeholder="Tìm theo tên hoặc số điện thoại">
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã HV</th>
+                                    <th>Họ và tên</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Giới tính</th>
+                                    <th>Điện thoại</th>
+                                    <th>Email</th>
+                                    <th>Khóa học</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KHÓA HỌC -->
+            <section class="page" id="courses">
+                <div class="card">
+                    <h2>Quản lý khóa học</h2>
+
+                    <form id="courseForm">
+                        <input type="hidden" id="courseId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="courseName">Tên khóa học</label>
+                                <input id="courseName" required
+                                       placeholder="Ví dụ: Tiếng Anh giao tiếp">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="courseField">Lĩnh vực</label>
+                                <input id="courseField" required
+                                       placeholder="Ví dụ: Giao tiếp, IELTS">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="courseDuration">Thời lượng</label>
+                                <input id="courseDuration"
+                                       placeholder="Ví dụ: 3 tháng">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="courseFee">Học phí (VNĐ)</label>
+                                <input id="courseFee" type="number" min="0"
+                                       placeholder="Nhập học phí">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveCourseButton">
+                                Thêm khóa học
+                            </button>
+                            <button type="button" class="secondary"
+                                    onclick="resetCourseForm()">
+                                Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách khóa học</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã khóa học</th>
+                                    <th>Tên khóa học</th>
+                                    <th>Lĩnh vực</th>
+                                    <th>Thời lượng</th>
+                                    <th>Học phí</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="courseList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GIÁO VIÊN -->
+            <section class="page" id="teachers">
+                <div class="card">
+                    <h2>Quản lý giáo viên</h2>
+
+                    <form id="teacherForm">
+                        <input type="hidden" id="teacherId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="teacherName">Họ tên giáo viên</label>
+                                <input id="teacherName" required
+                                       placeholder="Nhập họ tên">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="teacherPhone">Số điện thoại</label>
+                                <input id="teacherPhone" type="tel"
+                                       placeholder="Nhập số điện thoại">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="teacherEmail">Email</label>
+                                <input id="teacherEmail" type="email"
+                                       placeholder="Nhập email">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="teacherSpecialty">Chuyên môn</label>
+                                <input id="teacherSpecialty"
+                                       placeholder="Ví dụ: IELTS">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveTeacherButton">
+                                Thêm giáo viên
+                            </button>
+                            <button type="button" class="secondary"
+                                    onclick="resetTeacherForm()">
+                                Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách giáo viên</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã GV</th>
+                                    <th>Họ tên</th>
+                                    <th>Điện thoại</th>
+                                    <th>Email</th>
+                                    <th>Chuyên môn</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LỚP HỌC -->
+            <section class="page" id="classes">
+                <div class="card">
+                    <h2>Quản lý lớp học</h2>
+
+                    <form id="classForm">
+                        <input type="hidden" id="classId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="className">Tên lớp</label>
+                                <input id="className" required
+                                       placeholder="Ví dụ: AV01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="classCourse">Khóa học</label>
+                                <select id="classCourse" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="classTeacher">Giáo viên</label>
+                                <select id="classTeacher" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="classCapacity">Sĩ số tối đa</label>
+                                <input id="classCapacity" type="number"
+                                       min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveClassButton">
+                                Thêm lớp học
+                            </button>
+                            <button type="button" class="secondary"
+                                    onclick="resetClassForm()">
+                                Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách lớp học</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã lớp</th>
+                                    <th>Tên lớp</th>
+                                    <th>Khóa học</th>
+                                    <th>Giáo viên</th>
+                                    <th>Sĩ số tối đa</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LỊCH HỌC -->
+            <section class="page" id="schedules">
+                <div class="card">
+                    <h2>Quản lý lịch học</h2>
+
+                    <form id="scheduleForm">
+                        <input type="hidden" id="scheduleId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="scheduleClass">Lớp học</label>
+                                <select id="scheduleClass" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="scheduleDay">Thứ</label>
+                                <select id="scheduleDay" required>
+                                    <option value="">Chọn thứ</option>
+                                    <option>Thứ 2</option>
+                                    <option>Thứ 3</option>
+                                    <option>Thứ 4</option>
+                                    <option>Thứ 5</option>
+                                    <option>Thứ 6</option>
+                                    <option>Thứ 7</option>
+                                    <option>Chủ nhật</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="scheduleStart">Giờ bắt đầu</label>
+                                <input id="scheduleStart" type="time" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="scheduleEnd">Giờ kết thúc</label>
+                                <input id="scheduleEnd" type="time" required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveScheduleButton">
+                                Thêm lịch học
+                            </button>
+                            <button type="button" class="secondary"
+                                    onclick="resetScheduleForm()">
+                                Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách lịch học</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã lịch</th>
+                                    <th>Lớp</th>
+                                    <th>Thứ</th>
+                                    <th>Bắt đầu</th>
+                                    <th>Kết thúc</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ĐĂNG KÝ KHÓA HỌC -->
+            <section class="page" id="registrations">
+                <div class="card">
+                    <h2>Đăng ký khóa học và xếp lớp</h2>
+
+                    <form id="registrationForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="registrationStudent">Học viên</label>
+                                <select id="registrationStudent" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registrationClass">Lớp học</label>
+                                <select id="registrationClass" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registrationDate">Ngày đăng ký</label>
+                                <input id="registrationDate" type="date" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" style="margin-top:12px">
+                            Đăng ký
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách đăng ký</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã đăng ký</th>
+                                    <th>Học viên</th>
+                                    <th>Lớp học</th>
+                                    <th>Ngày đăng ký</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registrationList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ĐIỂM DANH -->
+            <section class="page" id="attendance">
+                <div class="card">
+                    <h2>Điểm danh học viên</h2>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="attendanceClass">Lớp học</label>
+                            <select id="attendanceClass"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attendanceDate">Ngày điểm danh</label>
+                            <input id="attendanceDate" type="date">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="loadAttendance()">
+                        Tải danh sách học viên
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h2>Danh sách điểm danh</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Học viên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceList"></tbody>
+                        </table>
+                    </div>
+
+                    <button type="button" class="success"
+                            onclick="saveAttendance()">
+                        Lưu điểm danh
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            Website quản lý học viên tại trung tâm ngoại ngữ
+        </footer>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ĐĂNG NHẬP
+        // ==========================================
+
+        const loginForm = document.getElementById("loginForm");
+
+        loginForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username")
+                .value.trim();
+
+            const password = document.getElementById("password").value;
+
+            if (username === "quanly" && password === "123456") {
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("app").style.display = "block";
+                document.getElementById("loginMessage").textContent = "";
+                refreshAll();
+            } else {
+                document.getElementById("loginMessage").textContent =
+                    "Tên đăng nhập hoặc mật khẩu không đúng!";
+            }
+        });
+
+        function logout() {
+            document.getElementById("app").style.display = "none";
+            document.getElementById("loginBox").style.display = "block";
+            document.getElementById("password").value = "";
+        }
+
+        // ==========================================
+        // 2. LƯU DỮ LIỆU TRÊN TRÌNH DUYỆT
+        // ==========================================
+
+        function readData(key) {
+            try {
+                return JSON.parse(localStorage.getItem(key)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        let students = readData("qlhv_students");
+        let courses = readData("qlhv_courses");
+        let teachers = readData("qlhv_teachers");
+        let classes = readData("qlhv_classes");
+        let schedules = readData("qlhv_schedules");
+        let registrations = readData("qlhv_registrations");
+        let attendance = readData("qlhv_attendance");
+
+        function saveData() {
+            localStorage.setItem("qlhv_students", JSON.stringify(students));
+            localStorage.setItem("qlhv_courses", JSON.stringify(courses));
+            localStorage.setItem("qlhv_teachers", JSON.stringify(teachers));
+            localStorage.setItem("qlhv_classes", JSON.stringify(classes));
+            localStorage.setItem("qlhv_schedules", JSON.stringify(schedules));
+            localStorage.setItem(
+                "qlhv_registrations", JSON.stringify(registrations)
+            );
+            localStorage.setItem("qlhv_attendance", JSON.stringify(attendance));
+        }
+
+        function nextId(list) {
+            return list.reduce((max, item) =>
+                Math.max(max, Number(item.id) || 0), 0) + 1;
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, function(char) {
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                }[char];
+            });
+        }
+
+        function optionList(items, placeholder, selectedId = "") {
+            let html = '<option value="">' +
+                escapeHTML(placeholder) + '</option>';
+
+            items.forEach(item => {
+                html += '<option value="' + item.id + '" ' +
+                    (String(item.id) === String(selectedId) ? "selected" : "") +
+                    '>' + escapeHTML(item.name) + '</option>';
+            });
+
+            return html;
+        }
+
+        function findName(list, id) {
+            const item = list.find(row => String(row.id) === String(id));
+            return item ? item.name : "Chưa xác định";
+        }
+
+        function renderTable(id, rows, emptyMessage = "Chưa có dữ liệu") {
+            const body = document.getElementById(id);
+            body.innerHTML = rows.length
+                ? rows.join("")
+                : '<tr><td colspan="10" class="empty">' +
+                    escapeHTML(emptyMessage) + '</td></tr>';
+        }
+
+        // ==========================================
+        // 3. ĐIỀU HƯỚNG TRANG
+        // ==========================================
+
+        document.querySelectorAll("#navigation button").forEach(button => {
+            button.addEventListener("click", function() {
+                document.querySelectorAll("#navigation button")
+                    .forEach(item => item.classList.remove("active"));
+
+                document.querySelectorAll(".page")
+                    .forEach(page => page.classList.remove("active"));
+
+                button.classList.add("active");
+
+                document.getElementById(button.dataset.page)
+                    .classList.add("active");
+
+                refreshAll();
+            });
+        });
+
+        // ==========================================
+        // 4. QUẢN LÝ HỌC VIÊN
+        // ==========================================
+
+        document.getElementById("studentForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("studentId").value;
+
+                const student = {
+                    id: id ? Number(id) : nextId(students),
+                    name: document.getElementById("studentName").value.trim(),
+                    birth: document.getElementById("studentBirth").value,
+                    gender: document.getElementById("studentGender").value,
+                    phone: document.getElementById("studentPhone").value.trim(),
+                    email: document.getElementById("studentEmail").value.trim(),
+                    courseId: document.getElementById("studentCourse").value
+                };
+
+                if (!student.name || !student.phone) {
+                    alert("Vui lòng nhập họ tên và số điện thoại.");
+                    return;
+                }
+
+                if (id) {
+                    const index = students.findIndex(
+                        item => item.id === Number(id)
+                    );
+                    if (index !== -1) students[index] = student;
+                } else {
+                    students.push(student);
+                }
+
+                saveData();
+                resetStudentForm();
+                refreshAll();
+                alert("Đã lưu thông tin học viên.");
+            });
+
+        function resetStudentForm() {
+            document.getElementById("studentForm").reset();
+            document.getElementById("studentId").value = "";
+            document.getElementById("saveStudentButton").textContent =
+                "Thêm học viên";
+        }
+
+        function editStudent(id) {
+            const student = students.find(item => item.id === id);
+            if (!student) return;
+
+            document.getElementById("studentId").value = student.id;
+            document.getElementById("studentName").value = student.name;
+            document.getElementById("studentBirth").value = student.birth;
+            document.getElementById("studentGender").value = student.gender;
+            document.getElementById("studentPhone").value = student.phone;
+            document.getElementById("studentEmail").value = student.email;
+
+            updateOptions();
+            document.getElementById("studentCourse").value =
+                student.courseId || "";
+
+            document.getElementById("saveStudentButton").textContent =
+                "Cập nhật học viên";
+
+            showPage("students");
+        }
+
+        function deleteStudent(id) {
+            if (!confirm("Bạn có chắc muốn xóa học viên này?")) return;
+
+            students = students.filter(item => item.id !== id);
+            registrations = registrations.filter(
+                item => item.studentId !== id
+            );
+            attendance = attendance.filter(
+                item => item.studentId !== id
+            );
+
+            saveData();
+            resetStudentForm();
+            refreshAll();
+        }
+
+        document.getElementById("studentSearch")
+            .addEventListener("input", renderStudents);
+
+        function renderStudents() {
+            const keyword = document.getElementById("studentSearch")
+                .value.trim().toLowerCase();
+
+            const filtered = students.filter(item =>
+                item.name.toLowerCase().includes(keyword) ||
+                item.phone.toLowerCase().includes(keyword)
+            );
+
+            renderTable("studentList", filtered.map(item => `
+                <tr>
+                    <td>HV${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td>${escapeHTML(item.birth)}</td>
+                    <td>${escapeHTML(item.gender)}</td>
+                    <td>${escapeHTML(item.phone)}</td>
+                    <td>${escapeHTML(item.email)}</td>
+                    <td>${escapeHTML(findName(courses, item.courseId))}</td>
+                    <td>
+                        <button class="table-button success"
+                            onclick="editStudent(${item.id})">Sửa</button>
+                        <button class="table-button danger"
+                            onclick="deleteStudent(${item.id})">Xóa</button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 5. QUẢN LÝ KHÓA HỌC
+        // ==========================================
+
+        document.getElementById("courseForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("courseId").value;
+
+                const item = {
+                    id: id ? Number(id) : nextId(courses),
+                    name: document.getElementById("courseName").value.trim(),
+                    field: document.getElementById("courseField").value.trim(),
+                    duration: document.getElementById("courseDuration").value.trim(),
+                    fee: document.getElementById("courseFee").value
+                };
+
+                if (id) {
+                    const index = courses.findIndex(
+                        row => row.id === Number(id)
+                    );
+                    if (index !== -1) courses[index] = item;
+                } else {
+                    courses.push(item);
+                }
+
+                saveData();
+                resetCourseForm();
+                refreshAll();
+                alert("Đã lưu khóa học.");
+            });
+
+        function resetCourseForm() {
+            document.getElementById("courseForm").reset();
+            document.getElementById("courseId").value = "";
+            document.getElementById("saveCourseButton").textContent =
+                "Thêm khóa học";
+        }
+
+        function editCourse(id) {
+            const item = courses.find(row => row.id === id);
+            if (!item) return;
+
+            document.getElementById("courseId").value = item.id;
+            document.getElementById("courseName").value = item.name;
+            document.getElementById("courseField").value = item.field;
+            document.getElementById("courseDuration").value = item.duration;
+            document.getElementById("courseFee").value = item.fee;
+            document.getElementById("saveCourseButton").textContent =
+                "Cập nhật khóa học";
+
+            showPage("courses");
+        }
+
+        function deleteCourse(id) {
+            if (!confirm("Bạn có chắc muốn xóa khóa học này?")) return;
+
+            courses = courses.filter(item => item.id !== id);
+            students.forEach(item => {
+                if (String(item.courseId) === String(id)) item.courseId = "";
+            });
+
+            saveData();
+            resetCourseForm();
+            refreshAll();
+        }
+
+        function renderCourses() {
+            renderTable("courseList", courses.map(item => `
+                <tr>
+                    <td>KH${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td>${escapeHTML(item.field)}</td>
+                    <td>${escapeHTML(item.duration)}</td>
+                    <td>${Number(item.fee || 0).toLocaleString("vi-VN")} đ</td>
+                    <td>
+                        <button class="table-button success"
+                            onclick="editCourse(${item.id})">Sửa</button>
+                        <button class="table-button danger"
+                            onclick="deleteCourse(${item.id})">Xóa</button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 6. QUẢN LÝ GIÁO VIÊN
+        // ==========================================
+
+        document.getElementById("teacherForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("teacherId").value;
+
+                const item = {
+                    id: id ? Number(id) : nextId(teachers),
+                    name: document.getElementById("teacherName").value.trim(),
+                    phone: document.getElementById("teacherPhone").value.trim(),
+                    email: document.getElementById("teacherEmail").value.trim(),
+                    specialty: document.getElementById("teacherSpecialty").value.trim()
+                };
+
+                if (id) {
+                    const index = teachers.findIndex(
+                        row => row.id === Number(id)
+                    );
+                    if (index !== -1) teachers[index] = item;
+                } else {
+                    teachers.push(item);
+                }
+
+                saveData();
+                resetTeacherForm();
+                refreshAll();
+                alert("Đã lưu thông tin giáo viên.");
+            });
+
+        function resetTeacherForm() {
+            document.getElementById("teacherForm").reset();
+            document.getElementById("teacherId").value = "";
+            document.getElementById("saveTeacherButton").textContent =
+                "Thêm giáo viên";
+        }
+
+        function editTeacher(id) {
+            const item = teachers.find(row => row.id === id);
+            if (!item) return;
+
+            document.getElementById("teacherId").value = item.id;
+            document.getElementById("teacherName").value = item.name;
+            document.getElementById("teacherPhone").value = item.phone;
+            document.getElementById("teacherEmail").value = item.email;
+            document.getElementById("teacherSpecialty").value = item.specialty;
+            document.getElementById("saveTeacherButton").textContent =
+                "Cập nhật giáo viên";
+
+            showPage("teachers");
+        }
+
+        function deleteTeacher(id) {
+            if (!confirm("Bạn có chắc muốn xóa giáo viên này?")) return;
+
+            teachers = teachers.filter(item => item.id !== id);
+            saveData();
+            resetTeacherForm();
+            refreshAll();
+        }
+
+        function renderTeachers() {
+            renderTable("teacherList", teachers.map(item => `
+                <tr>
+                    <td>GV${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td>${escapeHTML(item.phone)}</td>
+                    <td>${escapeHTML(item.email)}</td>
+                    <td>${escapeHTML(item.specialty)}</td>
+                    <td>
+                        <button class="table-button success"
+                            onclick="editTeacher(${item.id})">Sửa</button>
+                        <button class="table-button danger"
+                            onclick="deleteTeacher(${item.id})">Xóa</button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 7. QUẢN LÝ LỚP HỌC
+        // ==========================================
+
+        document.getElementById("classForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("classId").value;
+
+                const item = {
+                    id: id ? Number(id) : nextId(classes),
+                    name: document.getElementById("className").value.trim(),
+                    courseId: document.getElementById("classCourse").value,
+                    teacherId: document.getElementById("classTeacher").value,
+                    capacity: document.getElementById("classCapacity").value
+                };
+
+                if (id) {
+                    const index = classes.findIndex(
+                        row => row.id === Number(id)
+                    );
+                    if (index !== -1) classes[index] = item;
+                } else {
+                    classes.push(item);
+                }
+
+                saveData();
+                resetClassForm();
+                refreshAll();
+                alert("Đã lưu lớp học.");
+            });
+
+        function resetClassForm() {
+            document.getElementById("classForm").reset();
+            document.getElementById("classId").value = "";
+            document.getElementById("saveClassButton").textContent =
+                "Thêm lớp học";
+        }
+
+        function editClass(id) {
+            const item = classes.find(row => row.id === id);
+            if (!item) return;
+
+            updateOptions();
+
+            document.getElementById("classId").value = item.id;
+            document.getElementById("className").value = item.name;
+            document.getElementById("classCourse").value = item.courseId;
+            document.getElementById("classTeacher").value = item.teacherId;
+            document.getElementById("classCapacity").value = item.capacity;
+            document.getElementById("saveClassButton").textContent =
+                "Cập nhật lớp học";
+
+            showPage("classes");
+        }
+
+        function deleteClass(id) {
+            if (!confirm("Bạn có chắc muốn xóa lớp học này?")) return;
+
+            classes = classes.filter(item => item.id !== id);
+            schedules = schedules.filter(
+                item => item.classId !== id
+            );
+            registrations = registrations.filter(
+                item => item.classId !== id
+            );
+
+            saveData();
+            resetClassForm();
+            refreshAll();
+        }
+
+        function renderClasses() {
+            renderTable("classList", classes.map(item => `
+                <tr>
+                    <td>L${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td>${escapeHTML(findName(courses, item.courseId))}</td>
+                    <td>${escapeHTML(findName(teachers, item.teacherId))}</td>
+                    <td>${escapeHTML(item.capacity)}</td>
+                    <td>
+                        <button class="table-button success"
+                            onclick="editClass(${item.id})">Sửa</button>
+                        <button class="table-button danger"
+                            onclick="deleteClass(${item.id})">Xóa</button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 8. QUẢN LÝ LỊCH HỌC
+        // ==========================================
+
+        document.getElementById("scheduleForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("scheduleId").value;
+                const start = document.getElementById("scheduleStart").value;
+                const end = document.getElementById("scheduleEnd").value;
+
+                if (start >= end) {
+                    alert("Giờ kết thúc phải sau giờ bắt đầu.");
+                    return;
+                }
+
+                const item = {
+                    id: id ? Number(id) : nextId(schedules),
+                    classId: document.getElementById("scheduleClass").value,
+                    day: document.getElementById("scheduleDay").value,
+                    start: start,
+                    end: end
+                };
+
+                if (id) {
+                    const index = schedules.findIndex(
+                        row => row.id === Number(id)
+                    );
+                    if (index !== -1) schedules[index] = item;
+                } else {
+                    schedules.push(item);
+                }
+
+                saveData();
+                resetScheduleForm();
+                refreshAll();
+                alert("Đã lưu lịch học.");
+            });
+
+        function resetScheduleForm() {
+            document.getElementById("scheduleForm").reset();
+            document.getElementById("scheduleId").value = "";
+            document.getElementById("saveScheduleButton").textContent =
+                "Thêm lịch học";
+        }
+
+        function editSchedule(id) {
+            const item = schedules.find(row => row.id === id);
+            if (!item) return;
+
+            updateOptions();
+            document.getElementById("scheduleId").value = item.id;
+            document.getElementById("scheduleClass").value = item.classId;
+            document.getElementById("scheduleDay").value = item.day;
+            document.getElementById("scheduleStart").value = item.start;
+            document.getElementById("scheduleEnd").value = item.end;
+            document.getElementById("saveScheduleButton").textContent =
+                "Cập nhật lịch học";
+
+            showPage("schedules");
+        }
+
+        function deleteSchedule(id) {
+            if (!confirm("Bạn có chắc muốn xóa lịch học này?")) return;
+
+            schedules = schedules.filter(item => item.id !== id);
+            saveData();
+            refreshAll();
+        }
+
+        function renderSchedules() {
+            renderTable("scheduleList", schedules.map(item => `
+                <tr>
+                    <td>LH${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(findName(classes, item.classId))}</td>
+                    <td>${escapeHTML(item.day)}</td>
+                    <td>${escapeHTML(item.start)}</td>
+                    <td>${escapeHTML(item.end)}</td>
+                    <td>
+                        <button class="table-button success"
+                            onclick="editSchedule(${item.id})">Sửa</button>
+                        <button class="table-button danger"
+                            onclick="deleteSchedule(${item.id})">Xóa</button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 9. ĐĂNG KÝ KHÓA HỌC
+        // ==========================================
+
+        document.getElementById("registrationForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const studentId = Number(
+                    document.getElementById("registrationStudent").value
+                );
+                const classId = Number(
+                    document.getElementById("registrationClass").value
+                );
+
+                if (!studentId || !classId) {
+                    alert("Vui lòng chọn học viên và lớp học.");
+                    return;
+                }
+
+                const duplicate = registrations.some(item =>
+                    item.studentId === studentId &&
+                    item.classId === classId
+                );
+
+                if (duplicate) {
+                    alert("Học viên này đã đăng ký lớp học.");
+                    return;
+                }
+
+                const item = {
+                    id: nextId(registrations),
+                    studentId: studentId,
+                    classId: classId,
+                    date: document.getElementById("registrationDate").value
+                };
+
+                registrations.push(item);
+                saveData();
+                refreshAll();
+                alert("Đăng ký khóa học thành công.");
+            });
+
+        function deleteRegistration(id) {
+            if (!confirm("Bạn có muốn xóa đăng ký này?")) return;
+
+            registrations = registrations.filter(item => item.id !== id);
+            saveData();
+            refreshAll();
+        }
+
+        function renderRegistrations() {
+            renderTable("registrationList", registrations.map(item => `
+                <tr>
+                    <td>DK${String(item.id).padStart(3, "0")}</td>
+                    <td>${escapeHTML(findName(students, item.studentId))}</td>
+                    <td>${escapeHTML(findName(classes, item.classId))}</td>
+                    <td>${escapeHTML(item.date)}</td>
+                    <td>
+                        <button class="table-button danger"
+                            onclick="deleteRegistration(${item.id})">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+            `));
+        }
+
+        // ==========================================
+        // 10. ĐIỂM DANH
+        // ==========================================
+
+        function loadAttendance() {
+            const classId = document.getElementById("attendanceClass").value;
+            const date = document.getElementById("attendanceDate").value;
+
+            if (!classId || !date) {
+                alert("Vui lòng chọn lớp và ngày điểm danh.");
+                return;
+            }
+
+            const enrolledIds = registrations
+                .filter(item => String(item.classId) === String(classId))
+                .map(item => item.studentId);
+
+            const enrolledStudents = students.filter(item =>
+                enrolledIds.includes(item.id)
+            );
+
+            const rows = enrolledStudents.map(student => {
+                const record = attendance.find(item =>
+                    item.studentId === student.id &&
+                    String(item.classId) === String(classId) &&
+                    item.date === date
+                );
+
+                const status = record ? record.status : "Có mặt";
+
+                return `
+                    <tr data-student-id="${student.id}">
+                        <td>${escapeHTML(student.name)}</td>
+                        <td>${escapeHTML(student.phone)}</td>
+                        <td>
+                            <select class="attendance-status">
+                                <option value="Có mặt"
+                                    ${status === "Có mặt" ? "selected" : ""}>
+                                    Có mặt
+                                </option>
+                                <option value="Vắng mặt"
+                                    ${status === "Vắng mặt" ? "selected" : ""}>
+                                    Vắng mặt
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            renderTable("attendanceList", rows,
+                "Chưa có học viên đăng ký lớp này.");
+        }
+
+        function saveAttendance() {
+            const classId = document.getElementById("attendanceClass").value;
+            const date = document.getElementById("attendanceDate").value;
+
+            if (!classId || !date) {
+                alert("Vui lòng chọn lớp và ngày điểm danh.");
+                return;
+            }
+
+            const rows = document.querySelectorAll(
+                "#attendanceList tr[data-student-id]"
+            );
+
+            if (!rows.length) {
+                alert("Chưa có danh sách học viên để điểm danh.");
+                return;
+            }
+
+            rows.forEach(row => {
+                const studentId = Number(row.dataset.studentId);
+                const status = row.querySelector(".attendance-status").value;
+
+                const index = attendance.findIndex(item =>
+                    item.studentId === studentId &&
+                    String(item.classId) === String(classId) &&
+                    item.date === date
+                );
+
+                const record = {
+                    studentId: studentId,
+                    classId: Number(classId),
+                    date: date,
+                    status: status
+                };
+
+                if (index >= 0) {
+                    attendance[index] = record;
+                } else {
+                    attendance.push(record);
+                }
+            });
+
+            saveData();
+            alert("Đã lưu điểm danh.");
+        }
+
+        // ==========================================
+        // 11. CẬP NHẬT DANH SÁCH CHỌN
+        // ==========================================
+
+        function updateOptions() {
+            document.getElementById("studentCourse").innerHTML =
+                optionList(courses, "Chưa chọn khóa học",
+                    document.getElementById("studentCourse").value);
+
+            document.getElementById("classCourse").innerHTML =
+                optionList(courses, "Chọn khóa học",
+                    document.getElementById("classCourse").value);
+
+            document.getElementById("classTeacher").innerHTML =
+                optionList(teachers, "Chọn giáo viên",
+                    document.getElementById("classTeacher").value);
+
+            document.getElementById("scheduleClass").innerHTML =
+                optionList(classes, "Chọn lớp học",
+                    document.getElementById("scheduleClass").value);
+
+            document.getElementById("registrationStudent").innerHTML =
+                optionList(students, "Chọn học viên",
+                    document.getElementById("registrationStudent").value);
+
+            document.getElementById("registrationClass").innerHTML =
+                optionList(classes, "Chọn lớp học",
+                    document.getElementById("registrationClass").value);
+
+            document.getElementById("attendanceClass").innerHTML =
+                optionList(classes, "Chọn lớp học",
+                    document.getElementById("attendanceClass").value);
+        }
+
+        // ==========================================
+        // 12. LÀM MỚI GIAO DIỆN
+        // ==========================================
+
+        function showPage(pageId) {
+            document.querySelectorAll(".page")
+                .forEach(page => page.classList.remove("active"));
+
+            document.querySelectorAll("#navigation button")
+                .forEach(button => {
+                    button.classList.toggle(
+                        "active", button.dataset.page === pageId
+                    );
+                });
+
+            document.getElementById(pageId).classList.add("active");
+        }
+
+        function refreshAll() {
+            saveData();
+            updateOptions();
+            renderStudents();
+            renderCourses();
+            renderTeachers();
+            renderClasses();
+            renderSchedules();
+            renderRegistrations();
+
+            document.getElementById("totalStudents").textContent =
+                students.length;
+
+            document.getElementById("totalCourses").textContent =
+                courses.length;
+
+            document.getElementById("totalTeachers").textContent =
+                teachers.length;
+        }
+
+        // Hiển thị ngày hiện tại khi mở trang điểm danh
+        document.getElementById("attendanceDate").value =
+            new Date().toLocaleDateString("en-CA");
+
+        document.getElementById("registrationDate").value =
+            new Date().toLocaleDateString("en-CA");
+    </script>
+
+</body>
+</html>
